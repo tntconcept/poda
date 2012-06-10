@@ -1,0 +1,40 @@
+====
+    Poda by Autentia Real Business Solution S.L.
+    Copyright (C) 2012 Autentia Real Business Solution S.L.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+====
+
+	---------------------------------------------------------------------------
+	---------------------------------------------------------------------------
+
+ 	This product includes software developed at
+   	The Apache Software Foundation (http://www.apache.org/).
+   	   	
+	This product includes software developed at
+	QOS.ch (http://www.qos.ch/).
+
+	This product includes software developed at
+	http://junit.sourceforge.net/
+
+	This product includes software developed at
+	Hamcrest - library of matchers for building test expressions (http://code.google.com/p/hamcrest/)
+	
+	---------------------------------------------------------------------------
+	---------------------------------------------------------------------------
+   	
+   	Autentia Real Bussiness Solution S.L.
+ 	Tlf: +34 91 675 33 06, +34 655 99 11 72
+ 	Fax: +34 91 656 65 04
+	info@autentia.com
+

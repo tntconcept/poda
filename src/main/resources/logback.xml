@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Poda by Autentia Real Business Solution S.L.
+    Copyright (C) 2012 Autentia Real Business Solution S.L.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%date %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--&lt;!&ndash;See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender&ndash;&gt;-->
+        <!--<file>poda.log</file>-->
+        <!--<encoder>-->
+            <!--<pattern>%date %-5level %logger - %msg%n</pattern>-->
+        <!--</encoder>-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+            <!--<maxIndex>5</maxIndex>-->
+            <!--<fileNamePattern>poda.log.%i</fileNamePattern>-->
+        <!--</rollingPolicy>-->
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"/>-->
+    <!--</appender>-->
+
+    <!-- Set specific log levels - ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF -->
+    <logger name="com.autentia.poda" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+        <!--<appender-ref ref="file"/>-->
+    </root>
+</configuration>
