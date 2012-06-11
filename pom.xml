@@ -78,6 +78,7 @@
                     <header>${basedir}/src/main/config/copyrightNotice.txt</header>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <excludes>
+                        <exclude>.idea/**</exclude>
                         <exclude>**/LICENSE.txt</exclude>
                         <exclude>**/COPYING.LESSER</exclude>
                         <exclude>**/COPYING</exclude>
