@@ -25,24 +25,24 @@
         </encoder>
     </appender>
 
-    <!--<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--&lt;!&ndash;See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender&ndash;&gt;-->
-        <!--<file>poda.log</file>-->
-        <!--<encoder>-->
-            <!--<pattern>%date %-5level %logger - %msg%n</pattern>-->
-        <!--</encoder>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
-            <!--<maxIndex>5</maxIndex>-->
-            <!--<fileNamePattern>poda.log.%i</fileNamePattern>-->
-        <!--</rollingPolicy>-->
-        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"/>-->
-    <!--</appender>-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+        <file>poda.log</file>
+        <encoder>
+            <pattern>%date %-5level %logger - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>5</maxIndex>
+            <fileNamePattern>poda.log.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"/>
+    </appender>
 
     <!-- Set specific log levels - ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF -->
     <logger name="com.autentia.poda" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="stdout"/>
-        <!--<appender-ref ref="file"/>-->
+        <!--<appender-ref ref="stdout"/>-->
+        <appender-ref ref="file"/>
     </root>
 </configuration>
