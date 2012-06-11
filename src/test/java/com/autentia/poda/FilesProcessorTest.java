@@ -28,14 +28,14 @@ import static com.autentia.poda.TestCommons.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-public class FileParserTest {
+public class FilesProcessorTest {
 
     @Test
     public void findRootOfTrees() throws Exception {
-        assertFilesMetadata(fileParser.findRootOfTrees(), ROOT_OF_TREES);
+        assertFilesMetadata(ROOT_OF_TREES_FINDER.rootOfTrees(), ROOT_OF_TREES);
     }
 
-    private void assertFilesMetadata(Collection<FileMetadata> actualFilesMetadata, File[] expectedFiles) {
+    private void assertFilesMetadata(Collection<FileMetadata> actualFilesMetadata, File... expectedFiles) {
         assertThat(actualFilesMetadata, hasSize(expectedFiles.length));
         for (FileMetadata actualFileMetadata : actualFilesMetadata) {
             assertThat(actualFileMetadata.getFile(), isIn(expectedFiles));
@@ -44,12 +44,12 @@ public class FileParserTest {
 
     @Test
     public void findBinaryFiles() throws Exception {
-        assertFilesMetadata(fileParser.findBinaryFiles(), BINARY_FILES);
+        assertFilesMetadata(BINARY_FILE_FINDER.binaryFiles(), BINARY_FILES);
     }
 
     @Test
     public void findTrees() throws Exception {
-        List<FileMetadata> rootOfTrees = fileParser.findRootOfTrees();
+        List<FileMetadata> rootOfTrees = ROOT_OF_TREES_FINDER.rootOfTrees();
         for (FileMetadata root : rootOfTrees) {
             switch (root.getPath()) {
                 case SRC_TEST_RESOURCES + "notReferenced.txt":

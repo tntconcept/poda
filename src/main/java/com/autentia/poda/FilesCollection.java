@@ -17,6 +17,8 @@
 package com.autentia.poda;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,11 +30,16 @@ import java.util.List;
 import java.util.Map;
 
 public class FilesCollection implements Iterable<FileMetadata> {
+    private static final Logger logger = LoggerFactory.getLogger(FilesCollection.class);
+
     private Map<String, FileMetadata> filesByPath = Collections.emptyMap();
     private Map<String, List<FileMetadata>> filesByName = Collections.emptyMap();
 
     public FilesCollection scanDirectory(String path) {
-        Collection<File> scannedFiles = FileUtils.listFiles(new File(path), null, true);
+        File directoryToScan = new File(path);
+        logger.info("Searching files in directory: {}", directoryToScan.getAbsolutePath());
+        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, null, true);
+        logger.info("Found " + scannedFiles.size() + " files.");
 
         filesByPath = new HashMap<>(scannedFiles.size());
         filesByName = new HashMap<>(scannedFiles.size() / 2);
@@ -56,7 +63,7 @@ public class FilesCollection implements Iterable<FileMetadata> {
 
     @Override
     public Iterator<FileMetadata> iterator() {
-        return filesByPath.values().iterator();
+        return Collections.unmodifiableCollection(filesByPath.values()).iterator();
     }
 
     public FileMetadata getByPath(String path) {

@@ -16,22 +16,29 @@
  */
 package com.autentia.poda;
 
+import com.autentia.poda.parser.BinaryFileFinder;
+import com.autentia.poda.parser.FileParser;
+import com.autentia.poda.parser.FileReferencesFinder;
+import com.autentia.poda.parser.LineParser;
+import com.autentia.poda.parser.RootOfTreesFinder;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Poda {
 
-    public static void main(String[] args) {
-        Poda poda = new Poda();
-        String dirToScan = poda.parseCommandLineArguments(args);
-        poda.printGraph(new FileParser(new FilesCollection().scanDirectory(dirToScan)).findRootOfTrees());
+    private final List<FileParser> fileParsers = new ArrayList<>();
+    private final List<LineParser> lineParsers = new ArrayList<>();
+    private final String dirToScan;
+
+    public static void main(String... args) throws IOException {
+        String dirToScan = parseCommandLineArguments(args);
+        new Poda(dirToScan).launchProcess();
     }
 
-    private void printGraph(List<FileMetadata> rootOfTrees) {
-        System.out.println(new TextGraph(rootOfTrees));
-    }
-
-    private String parseCommandLineArguments(String[] args) {
+    private static String parseCommandLineArguments(String... args) {
         if (args.length == 0) {
             return ".";
         }
@@ -43,6 +50,39 @@ public class Poda {
         }
 
         return dirToScan;
+    }
+
+    public Poda(String dirToScan) {
+        this.dirToScan = dirToScan;
+    }
+
+    private void launchProcess() throws IOException {
+        FilesCollection filesToInspect = searchFiles();
+
+        configureParsers(filesToInspect);
+
+        System.out.println("Parsing files. This could take quite long, please be patient ...");
+        new FilesProcessor(filesToInspect, fileParsers, lineParsers).parseFiles();
+
+        printGraph();
+    }
+
+    private FilesCollection searchFiles() throws IOException {
+        System.out.println("Searching files in directory: " + new File(dirToScan).getCanonicalPath() + " ...");
+        FilesCollection filesToInspect = new FilesCollection().scanDirectory(dirToScan);
+        System.out.println("Found " + filesToInspect.getAll().size() + " files.");
+        return filesToInspect;
+    }
+
+    private void configureParsers(FilesCollection filesToInspect) {
+        fileParsers.add(new RootOfTreesFinder(filesToInspect));
+        lineParsers.add(new BinaryFileFinder());
+        lineParsers.add(new FileReferencesFinder(filesToInspect));
+    }
+
+    private void printGraph() {
+        RootOfTreesFinder rootOfTreesFinder = (RootOfTreesFinder) fileParsers.get(0);
+        System.out.println(new TextGraph(rootOfTreesFinder.rootOfTrees()));
     }
 
 }

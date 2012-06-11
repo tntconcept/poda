@@ -16,7 +16,14 @@
  */
 package com.autentia.poda;
 
+import com.autentia.poda.parser.BinaryFileFinder;
+import com.autentia.poda.parser.FileParser;
+import com.autentia.poda.parser.FileReferencesFinder;
+import com.autentia.poda.parser.RootOfTreesFinder;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TestCommons {
     static final String SRC_TEST_RESOURCES = "src/test/resources/dummyFileSystem/";
@@ -59,6 +66,20 @@ public class TestCommons {
 
     static final FilesCollection files = new FilesCollection().scanDirectory(SRC_TEST_RESOURCES);
 
-    static final FileParser fileParser = new FileParser(files);
+    static final RootOfTreesFinder ROOT_OF_TREES_FINDER = new RootOfTreesFinder(files);
 
+    static final BinaryFileFinder BINARY_FILE_FINDER = new BinaryFileFinder();
+
+    static final FilesProcessor FILES_PROCESSOR = new FilesProcessor(
+            files,
+            new ArrayList<>(Arrays.asList(new FileParser[] {ROOT_OF_TREES_FINDER})),
+            new ArrayList<>(Arrays.asList(BINARY_FILE_FINDER, new FileReferencesFinder(files))));
+
+    static {
+        FILES_PROCESSOR.parseFiles();
+    }
+
+    private TestCommons() {
+        // Utility class
+    }
 }

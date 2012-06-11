@@ -21,7 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.autentia.poda.TestCommons.EXPECTED_GRAPH;
-import static com.autentia.poda.TestCommons.fileParser;
+import static com.autentia.poda.TestCommons.FILES_PROCESSOR;
+import static com.autentia.poda.TestCommons.ROOT_OF_TREES_FINDER;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -31,7 +32,7 @@ public class TextGraphTest {
 
     @Test
     public void graphAsString() throws Exception {
-        TextGraph textGraph = new TextGraph(fileParser.findRootOfTrees());
+        TextGraph textGraph = new TextGraph(ROOT_OF_TREES_FINDER.rootOfTrees());
         logger.debug("\n{}", textGraph);
 
         assertThat(textGraph.toString(), equalTo(EXPECTED_GRAPH));
