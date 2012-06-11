@@ -35,13 +35,6 @@ public class FilesProcessorTest {
         assertFilesMetadata(ROOT_OF_TREES_FINDER.rootOfTrees(), ROOT_OF_TREES);
     }
 
-    private void assertFilesMetadata(Collection<FileMetadata> actualFilesMetadata, File... expectedFiles) {
-        assertThat(actualFilesMetadata, hasSize(expectedFiles.length));
-        for (FileMetadata actualFileMetadata : actualFilesMetadata) {
-            assertThat(actualFileMetadata.getFile(), isIn(expectedFiles));
-        }
-    }
-
     @Test
     public void findBinaryFiles() throws Exception {
         assertFilesMetadata(BINARY_FILE_FINDER.binaryFiles(), BINARY_FILES);

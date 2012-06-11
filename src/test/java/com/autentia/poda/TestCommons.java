@@ -24,6 +24,11 @@ import com.autentia.poda.parser.RootOfTreesFinder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isIn;
+import static org.junit.Assert.assertThat;
 
 public class TestCommons {
     static final String SRC_TEST_RESOURCES = "src/test/resources/dummyFileSystem/";
@@ -77,6 +82,13 @@ public class TestCommons {
 
     static {
         FILES_PROCESSOR.parseFiles();
+    }
+
+    static void assertFilesMetadata(Collection<FileMetadata> actualFilesMetadata, File... expectedFiles) {
+        assertThat(actualFilesMetadata, hasSize(expectedFiles.length));
+        for (FileMetadata actualFileMetadata : actualFilesMetadata) {
+            assertThat(actualFileMetadata.getFile(), isIn(expectedFiles));
+        }
     }
 
     private TestCommons() {

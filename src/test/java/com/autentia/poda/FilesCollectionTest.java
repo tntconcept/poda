@@ -44,10 +44,4 @@ public class FilesCollectionTest {
         assertFilesMetadata(filesWithSameName, FILES_WITH_SAME_NAME);
     }
 
-    private void assertFilesMetadata(Collection<FileMetadata> actualFilesMetadata, File[] expectedFiles) {
-        assertThat(actualFilesMetadata, hasSize(expectedFiles.length));
-        for (FileMetadata actualFileMetadata : actualFilesMetadata) {
-            assertThat(actualFileMetadata.getFile(), isIn(expectedFiles));
-        }
-    }
 }
