@@ -17,11 +17,17 @@
 package com.autentia.poda;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class TextGraph {
     private final List<FileMetadata> rootOfTrees;
-    private String toStringCache;
+    private String toStringCache = null;
+    private int lineNumber = 0;
+    private Map<String, Integer> visitedFilesInLine = new HashMap<>();
 
     public TextGraph(List<FileMetadata> rootOfTrees) {
         this.rootOfTrees = rootOfTrees;
@@ -31,22 +37,34 @@ public class TextGraph {
     public String toString() {
         if (toStringCache == null) {
             StringBuilder textGraph = new StringBuilder();
-            recursivePrint(textGraph, "", rootOfTrees);
+            recursivePrint(textGraph, " - ", rootOfTrees);
             toStringCache = textGraph.toString();
         }
         return toStringCache;
     }
 
     private void recursivePrint(StringBuilder textGraph, String indentation, Collection<FileMetadata> files) {
-        for (FileMetadata file : files) {
-            textGraph.append(indentation).append(file.getPath());
-            if (file.isBinary()) {
-                textGraph.append("(B)");
+        SortedSet<FileMetadata> sortedFiles = new TreeSet<>(files);
+        for (FileMetadata file : sortedFiles) {
+            lineNumber++;
+            int previousLineNumber = putInVisitedFilesInLine(file);
+            textGraph.append(lineNumber).append(indentation).append(file.toStringShortFormat());
+            if (previousLineNumber == lineNumber) {
+                textGraph.append(System.lineSeparator());
+                recursivePrint(textGraph, incrementIndentation(indentation), file.references());
+            } else {
+                textGraph.append(" --> ").append(previousLineNumber).append(System.lineSeparator());
             }
-            textGraph.append(System.lineSeparator());
-
-            recursivePrint(textGraph, incrementIndentation(indentation), file.references());
         }
+    }
+
+    private int putInVisitedFilesInLine(FileMetadata file) {
+        Integer visitedFileInLine = visitedFilesInLine.get(file.getPath());
+        if (visitedFileInLine == null) {
+            visitedFilesInLine.put(file.getPath(), Integer.valueOf(lineNumber));
+            return lineNumber;
+        }
+        return visitedFileInLine.intValue();
     }
 
     private String incrementIndentation(String indentation) {

@@ -16,6 +16,7 @@
  */
 package com.autentia.poda.parser;
 
+import ch.qos.logback.core.joran.conditional.ElseAction;
 import com.autentia.poda.FileMetadata;
 import org.junit.Test;
 
@@ -50,16 +51,24 @@ public class FileReferencesFinderTest {
                 case SRC_TEST_RESOURCES + "com/autentia/main.txt":
                     assertThat(root.references(), hasSize(2));
                     for (FileMetadata reference : root.references()) {
-                        switch (reference.getName()) {
-                            case "Utils.txt":
-                                assertTrue(reference.references().isEmpty());
+                        switch (reference.getPath()) {
+                            case SRC_TEST_RESOURCES + "com/autentia/Utils.txt":
+                                assertThat(reference.references(), hasSize(1));
+                                assertThat(reference.references().iterator().next().getName(), equalTo("Negocio.txt"));
                                 break;
 
-                            case "Negocio.txt":
+                            case SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt":
                                 assertThat(root.references(), hasSize(2));
                                 for (FileMetadata reference2 : reference.references()) {
                                     assertThat(reference2.getName(), isIn(new ArrayList<>(Arrays.asList("Utils.txt", "prohibidos-monos-lagartos-150x150.gif"))));
-                                    assertTrue(reference2.references().isEmpty());
+                                    if (reference2.getName().equals("prohibidos-monos-lagartos-150x150.gif")) {
+                                        assertTrue(reference2.references().isEmpty());
+                                    } else if (reference2.getName().equals("Utils.txt")) {
+                                        assertThat(reference2.references(), hasSize(1));
+                                        assertThat(reference2.references().iterator().next().getName(), equalTo("Negocio.txt"));
+                                    } else {
+                                        fail();
+                                    }
                                 }
                                 break;
 

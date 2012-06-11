@@ -16,3 +16,5 @@
 ====
 
 Este fichero se referencia desde el main y negocio.
+
+Además hace una referencia a Negocio.txt, creando una referencia circular!!!

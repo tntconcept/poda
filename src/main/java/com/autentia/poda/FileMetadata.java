@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-public class FileMetadata {
+public class FileMetadata implements Comparable<FileMetadata> {
     private final File originalFile;
-    private boolean binary = false;
+    private boolean isBinary = false;
     private final Collection<FileMetadata> references = new HashSet<>();
 
     public FileMetadata(File originalFile) {
@@ -55,12 +55,12 @@ public class FileMetadata {
         return getPath().hashCode();
     }
 
-    public void setBinary(boolean binary) {
-        this.binary = binary;
+    public void setBinary(boolean isBinary) {
+        this.isBinary = isBinary;
     }
 
     public boolean isBinary() {
-        return binary;
+        return isBinary;
     }
 
     public void addReference(FileMetadata reference) {
@@ -73,10 +73,7 @@ public class FileMetadata {
 
     @Override
     public String toString() {
-        StringBuilder toString = new StringBuilder(getClass().getSimpleName() + "{file=").append(originalFile.getPath());
-        if (binary) {
-            toString.append("(B)");
-        }
+        StringBuilder toString = new StringBuilder(getClass().getSimpleName() + "{file=").append(toStringShortFormat());
         if (!references.isEmpty()) {
             toString.append(", references=[");
             for (FileMetadata fileReferenced : references) {
@@ -89,7 +86,20 @@ public class FileMetadata {
         return toString.toString();
     }
 
+    public String toStringShortFormat() {
+        String shortFormat = originalFile.getPath();
+        if (isBinary) {
+            shortFormat += "(B)";
+        }
+        return shortFormat;
+    }
+
     public File getFile() {
         return originalFile;
+    }
+
+    @Override
+    public int compareTo(FileMetadata o) {
+        return originalFile.getPath().compareTo(o.getPath());
     }
 }

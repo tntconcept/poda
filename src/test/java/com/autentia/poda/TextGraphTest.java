@@ -29,15 +29,16 @@ public class TextGraphTest {
     private static final Logger logger = LoggerFactory.getLogger(TextGraphTest.class);
 
     private static final String EXPECTED_GRAPH =
-            SRC_TEST_RESOURCES + "com/autentia/main.txt\n" +
-            "    " + SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt\n" +
-            "        " + SRC_TEST_RESOURCES + "com/autentia/resources/prohibidos-monos-lagartos-150x150.gif(B)\n" +
-            "        " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
-            "    " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
-            SRC_TEST_RESOURCES + "notReferenced.txt\n" +
-            "    " + SRC_TEST_RESOURCES + "com/autentia/resources/alejandropgarci.jpg(B)\n" +
-            SRC_TEST_RESOURCES + "com/autentia/resources/autentia.png(B)\n" +
-            SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt\n";
+            "1 - " + SRC_TEST_RESOURCES + "com/autentia/main.txt\n" +
+            "2 -     " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
+            "3 -         " + SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt\n" +
+            "4 -             " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt --> 2\n" +
+            "5 -             " + SRC_TEST_RESOURCES + "com/autentia/resources/prohibidos-monos-lagartos-150x150.gif(B)\n" +
+            "6 -     " + SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt --> 3\n" +
+            "7 - " + SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt\n" +
+            "8 - " + SRC_TEST_RESOURCES + "com/autentia/resources/autentia.png(B)\n" +
+            "9 - " + SRC_TEST_RESOURCES + "notReferenced.txt\n" +
+            "10 -     " + SRC_TEST_RESOURCES + "com/autentia/resources/alejandropgarci.jpg(B)\n";
 
     @Test
     public void graphAsString() throws Exception {
