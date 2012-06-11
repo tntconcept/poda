@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.autentia.poda;
+package com.autentia.poda.parser;
 
 import org.junit.Test;
 
-import static com.autentia.poda.TestEnvironment.FILES;
-import static com.autentia.poda.TestEnvironment.MOCK_FILE_PARSER;
+import static com.autentia.poda.TestEnvironment.*;
 
-public class FilesProcessorTest {
+public class BinaryFileFinderTest {
 
     @Test
-    public void callBeforeAndAfterEachFile() throws Exception {
-        MOCK_FILE_PARSER.assertCallsCounts(FILES.length);
+    public void findBinaryFiles() throws Exception {
+        assertFilesMetadata(BINARY_FILE_FINDER.binaryFiles(), BINARY_FILES);
     }
 }

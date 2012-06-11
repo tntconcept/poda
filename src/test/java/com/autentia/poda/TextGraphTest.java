@@ -20,15 +20,24 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.autentia.poda.TestCommons.EXPECTED_GRAPH;
-import static com.autentia.poda.TestCommons.FILES_PROCESSOR;
-import static com.autentia.poda.TestCommons.ROOT_OF_TREES_FINDER;
+import static com.autentia.poda.TestEnvironment.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class TextGraphTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TextGraphTest.class);
+
+    private static final String EXPECTED_GRAPH =
+            SRC_TEST_RESOURCES + "com/autentia/main.txt\n" +
+            "    " + SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt\n" +
+            "        " + SRC_TEST_RESOURCES + "com/autentia/resources/prohibidos-monos-lagartos-150x150.gif(B)\n" +
+            "        " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
+            "    " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
+            SRC_TEST_RESOURCES + "notReferenced.txt\n" +
+            "    " + SRC_TEST_RESOURCES + "com/autentia/resources/alejandropgarci.jpg(B)\n" +
+            SRC_TEST_RESOURCES + "com/autentia/resources/autentia.png(B)\n" +
+            SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt\n";
 
     @Test
     public void graphAsString() throws Exception {

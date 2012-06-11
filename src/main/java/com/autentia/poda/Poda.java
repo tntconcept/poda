@@ -22,6 +22,8 @@ import com.autentia.poda.parser.FileReferencesFinder;
 import com.autentia.poda.parser.LineParser;
 import com.autentia.poda.parser.RootOfTreesFinder;
 import com.autentia.poda.parser.Statistician;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,32 +32,31 @@ import java.util.List;
 
 public class Poda {
 
+    public static void main(String... args) throws IOException {
+        Poda poda = new Poda();
+
+        JCommander jCommander = new JCommander(poda, args);
+        jCommander.setProgramName(Poda.class.getSimpleName());
+
+        if (poda.showUsage) {
+            jCommander.usage();
+            return;
+        }
+
+        poda.launchProcess();
+    }
+
+    @Parameter(names = {"-fsl", "--follow-symblinks"}, description = "Follow symbolic links.")
+    private boolean followSymbolicLinks = false;
+
+    @Parameter(description = "directory-to-scan")
+    private List<String> commandLineArgs = new ArrayList<>();
+
+    @Parameter(names = {"-h", "--help"}, description = "Show this help and exit.")
+    private boolean showUsage = false;
+
     private final List<FileParser> fileParsers = new ArrayList<>();
     private final List<LineParser> lineParsers = new ArrayList<>();
-    private final String dirToScan;
-
-    public static void main(String... args) throws IOException {
-        String dirToScan = parseCommandLineArguments(args);
-        new Poda(dirToScan).launchProcess();
-    }
-
-    private static String parseCommandLineArguments(String... args) {
-        if (args.length == 0) {
-            return ".";
-        }
-        String dirToScan = args[0];
-
-        File fileToScan = new File(dirToScan);
-        if (!fileToScan.exists() || !fileToScan.isDirectory()) {
-            System.err.println("ERROR - The specify path doesn't exist or is not a directory.");
-        }
-
-        return dirToScan;
-    }
-
-    public Poda(String dirToScan) {
-        this.dirToScan = dirToScan;
-    }
 
     private void launchProcess() throws IOException {
         FilesCollection filesToInspect = searchFiles();
@@ -70,10 +71,26 @@ public class Poda {
     }
 
     private FilesCollection searchFiles() throws IOException {
+        String dirToScan = dirToScan();
         System.out.println("Searching files in directory: " + new File(dirToScan).getCanonicalPath() + " ...");
-        FilesCollection filesToInspect = new FilesCollection().scanDirectory(dirToScan);
+        FilesCollection filesToInspect = new FilesCollection().scanDirectory(dirToScan, followSymbolicLinks);
         System.out.println("Found " + filesToInspect.getAll().size() + " files.");
         return filesToInspect;
+    }
+
+    private String dirToScan() {
+        if (commandLineArgs.isEmpty()) {
+            return ".";
+        }
+        String dirToScan = commandLineArgs.get(0);
+
+        File fileToScan = new File(dirToScan);
+        if (!fileToScan.exists() || !fileToScan.isDirectory()) {
+            System.err.println("ERROR - The specify path doesn't exist or is not a directory.");
+            System.exit(-1);
+        }
+
+        return dirToScan;
     }
 
     private void configureParsers(FilesCollection filesToInspect) {

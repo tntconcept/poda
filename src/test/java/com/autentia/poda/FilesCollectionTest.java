@@ -16,31 +16,55 @@
  */
 package com.autentia.poda;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import static com.autentia.poda.TestCommons.*;
+import static com.autentia.poda.TestEnvironment.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class FilesCollectionTest {
 
+    private static final File[] FILES_WITH_SAME_NAME = {
+            new File(SRC_TEST_RESOURCES + "notReferenced.txt"),
+            new File(SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt")};
+
+    private static File[] FILES_FOLLOWING_SYMBOLIC_LINKS;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        List<File> filesFollowingSymbolicLinks = new ArrayList<>(Arrays.asList(FILES));
+        filesFollowingSymbolicLinks.add(new File(SRC_TEST_RESOURCES + "toLinkWithSymbolicLink/fileInsideSymbolicLinkDir.txt"));
+        FILES_FOLLOWING_SYMBOLIC_LINKS = filesFollowingSymbolicLinks.toArray(new File[filesFollowingSymbolicLinks.size()]);
+    }
+
     @Test
     public void scanAllFiles() throws Exception {
-        assertFilesMetadata(files.getAll(), FILES);
+        assertFilesMetadata(FILES_TO_INSPECT.getAll(), FILES);
+    }
+
+    @Test
+    public void scanAllFilesFollowingSymbolicLinks() throws Exception {
+        FilesCollection filesFollowingSymbolicLinks = new FilesCollection().scanDirectory(SRC_TEST_RESOURCES, true);
+        assertFilesMetadata(filesFollowingSymbolicLinks.getAll(), FILES_FOLLOWING_SYMBOLIC_LINKS);
+
     }
 
     @Test
     public void getByPath() throws Exception {
-        FileMetadata fileByPath = files.getByPath(SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt");
+        FileMetadata fileByPath = FILES_TO_INSPECT.getByPath(SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt");
         assertThat(fileByPath.getFile(), equalTo(new File(SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt")));
     }
 
     @Test
     public void getByName() throws Exception {
-        Collection<FileMetadata> filesWithSameName = files.getByName("notReferenced.txt");
+        Collection<FileMetadata> filesWithSameName = FILES_TO_INSPECT.getByName("notReferenced.txt");
         assertFilesMetadata(filesWithSameName, FILES_WITH_SAME_NAME);
     }
 

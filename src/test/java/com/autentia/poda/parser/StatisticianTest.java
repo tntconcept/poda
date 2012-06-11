@@ -17,7 +17,7 @@
 package com.autentia.poda.parser;
 
 import org.junit.Test;
-import static com.autentia.poda.TestCommons.*;
+import static com.autentia.poda.TestEnvironment.*;
 
 public class StatisticianTest {
     @Test

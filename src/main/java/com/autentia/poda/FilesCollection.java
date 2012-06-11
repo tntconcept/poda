@@ -17,10 +17,16 @@
 package com.autentia.poda;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AbstractFileFilter;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,24 +38,38 @@ import java.util.Map;
 public class FilesCollection implements Iterable<FileMetadata> {
     private static final Logger logger = LoggerFactory.getLogger(FilesCollection.class);
 
+    private static final IOFileFilter symbolicLinksFilter = new AbstractFileFilter() {
+        @Override
+        public boolean accept(File file) {
+            return !Files.isSymbolicLink(file.toPath());
+        }
+    };
+
     private Map<String, FileMetadata> filesByPath = Collections.emptyMap();
     private Map<String, List<FileMetadata>> filesByName = Collections.emptyMap();
 
-    public FilesCollection scanDirectory(String path) {
-        File directoryToScan = new File(path);
-        logger.info("Searching files in directory: {}", directoryToScan.getAbsolutePath());
-        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, null, true);
-        logger.info("Found " + scannedFiles.size() + " files.");
-
-        filesByPath = new HashMap<>(scannedFiles.size());
-        filesByName = new HashMap<>(scannedFiles.size() / 2);
-        for (File scannedFile : scannedFiles) {
+    public FilesCollection scanDirectory(String path, boolean followSymbolicLinks) {
+        Collection<File> files = listFiles(path, followSymbolicLinks);
+        filesByPath = new HashMap<>(files.size());
+        filesByName = new HashMap<>(files.size() / 2);
+        for (File scannedFile : files) {
             FileMetadata scannedFileMetadata = new FileMetadata(scannedFile);
             filesByPath.put(scannedFile.getPath(), scannedFileMetadata);
             putByName(scannedFileMetadata);
         }
-
         return this;
+    }
+
+    private Collection<File> listFiles(String path, boolean followSymbolicLinks) {
+        File directoryToScan = new File(path);
+        logger.info("Searching files in directory: {}", directoryToScan.getAbsolutePath());
+
+//        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, null, true);
+        IOFileFilter dirFilter = followSymbolicLinks ? TrueFileFilter.INSTANCE : symbolicLinksFilter;
+        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, TrueFileFilter.INSTANCE, dirFilter);
+
+        logger.info("Found " + scannedFiles.size() + " files.");
+        return scannedFiles;
     }
 
     private void putByName(FileMetadata scannedFileMetadata) {

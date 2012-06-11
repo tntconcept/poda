@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.autentia.poda;
+package com.autentia.poda.parser;
 
 import org.junit.Test;
 
-import static com.autentia.poda.TestEnvironment.FILES;
-import static com.autentia.poda.TestEnvironment.MOCK_FILE_PARSER;
+import static com.autentia.poda.TestEnvironment.ROOT_OF_TREES;
+import static com.autentia.poda.TestEnvironment.ROOT_OF_TREES_FINDER;
+import static com.autentia.poda.TestEnvironment.assertFilesMetadata;
 
-public class FilesProcessorTest {
+public class RootOfTreesFinderTest {
 
     @Test
-    public void callBeforeAndAfterEachFile() throws Exception {
-        MOCK_FILE_PARSER.assertCallsCounts(FILES.length);
+    public void findRootOfTrees() throws Exception {
+        assertFilesMetadata(ROOT_OF_TREES_FINDER.rootOfTrees(), ROOT_OF_TREES);
     }
+
 }
