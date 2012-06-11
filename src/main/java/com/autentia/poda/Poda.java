@@ -24,6 +24,8 @@ import com.autentia.poda.parser.RootOfTreesFinder;
 import com.autentia.poda.parser.Statistician;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Poda {
+
+    private static final Logger logger = LoggerFactory.getLogger(Poda.class);
 
     public static void main(String... args) throws IOException {
         Poda poda = new Poda();
@@ -108,7 +112,10 @@ public class Poda {
 
     private void printGraph() {
         RootOfTreesFinder rootOfTreesFinder = (RootOfTreesFinder) fileParsers.get(0);
-        System.out.println(new TextGraph(rootOfTreesFinder.rootOfTrees()));
+        TextGraph textGraph = new TextGraph(rootOfTreesFinder.rootOfTrees());
+        logger.info("\n{}", textGraph);
+        logger.info("{}", fileParsers.get(1));
+        System.out.println(textGraph);
     }
 
 }

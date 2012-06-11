@@ -20,8 +20,8 @@ import com.autentia.poda.FileMetadata;
 
 public class Statistician implements FileParser {
     private int filesCount = 0;
-    private long startMillis = 0L;
-    private long millisToProcessFilesSum = 0L;
+    private long startParseFileMillis = 0L;
+    private long elapsedMillisParsingFiles = 0L;
     private final int totalFilesCount;
     private final ChangeValueListener changeValueListener;
 
@@ -46,14 +46,12 @@ public class Statistician implements FileParser {
 
     @Override
     public void beforeParsingFile(FileMetadata fileToParse) {
-        startMillis = System.currentTimeMillis();
+        startParseFileMillis = System.currentTimeMillis();
     }
 
     @Override
     public void afterParsingFile(FileMetadata parsedFile) {
-        long endMillis = System.currentTimeMillis();
-        long millisToProcessFile = endMillis - startMillis;
-        millisToProcessFilesSum += millisToProcessFile;
+        elapsedMillisParsingFiles += System.currentTimeMillis() - startParseFileMillis;
         filesCount++;
         changeValueListener.changeValue(this);
     }
@@ -63,7 +61,7 @@ public class Statistician implements FileParser {
     }
 
     public long averageMillisToProcessFiles() {
-        return millisToProcessFilesSum / filesCount;
+        return elapsedMillisParsingFiles / filesCount;
     }
 
     public int progressPercentage() {
@@ -74,13 +72,18 @@ public class Statistician implements FileParser {
         return (long) averageMillisToProcessFiles() * (totalFilesCount - filesCount);
     }
 
+    public long elapsedMillisParsingFiles() {
+        return elapsedMillisParsingFiles;
+    }
+
     @Override
     public String toString() {
         return "Statistician{" +
-                "files=" + filesCount + "/" + totalFilesCount +
+                "files=" + filesCount + '/' + totalFilesCount +
                 ", averageMillisToProcessFiles=" + averageMillisToProcessFiles() +
                 ", progressPercentage=" + progressPercentage() +
-                "%, remainingMillis=" + approximateRemainingMillis() + "}";
+                "%, approximateRemainingMillis=" + approximateRemainingMillis() +
+                ", elapsedMillisParsingFiles=" + elapsedMillisParsingFiles + '}';
     }
 }
 
