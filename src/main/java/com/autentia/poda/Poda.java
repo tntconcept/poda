@@ -21,6 +21,7 @@ import com.autentia.poda.parser.FileParser;
 import com.autentia.poda.parser.FileReferencesFinder;
 import com.autentia.poda.parser.LineParser;
 import com.autentia.poda.parser.RootOfTreesFinder;
+import com.autentia.poda.parser.Statistician;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +65,7 @@ public class Poda {
         System.out.println("Parsing files. This could take quite long, please be patient ...");
         new FilesProcessor(filesToInspect, fileParsers, lineParsers).parseFiles();
 
+        System.out.println();
         printGraph();
     }
 
@@ -76,6 +78,13 @@ public class Poda {
 
     private void configureParsers(FilesCollection filesToInspect) {
         fileParsers.add(new RootOfTreesFinder(filesToInspect));
+        fileParsers.add(new Statistician(filesToInspect.getAll().size(), new Statistician.ChangeValueListener() {
+            @Override
+            public void changeValue(Statistician statistician) {
+                System.out.print(statistician + "                            \r");
+            }
+        }));
+
         lineParsers.add(new BinaryFileFinder());
         lineParsers.add(new FileReferencesFinder(filesToInspect));
     }

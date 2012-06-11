@@ -16,32 +16,12 @@
  */
 package com.autentia.poda.parser;
 
-import com.autentia.poda.FileMetadata;
-import com.autentia.poda.FilesCollection;
+import org.junit.Test;
+import static com.autentia.poda.TestCommons.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class RootOfTreesFinder implements FileParser {
-
-    private final List<FileMetadata> roots = new ArrayList<>();
-
-    public RootOfTreesFinder(FilesCollection filesToInspect) {
-        roots.addAll(filesToInspect.getAll());
+public class StatisticianTest {
+    @Test
+    public void checkStatistics() throws Exception {
+        System.out.println(STATISTICIAN);
     }
-
-    @Override
-    public void beforeParsingFile(FileMetadata fileToParse) {
-    }
-
-    @Override
-    public void afterParsingFile(FileMetadata parsedFile) {
-        roots.removeAll(parsedFile.references());
-    }
-
-    public List<FileMetadata> rootOfTrees() {
-        return Collections.unmodifiableList(roots);
-    }
-
 }

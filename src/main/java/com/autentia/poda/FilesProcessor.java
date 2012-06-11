@@ -46,13 +46,18 @@ public class FilesProcessor {
         if (!alreadyScanned) {
             logger.info("Parsing files. This could take quite long, please be patient ...");
             for (FileMetadata fileToInspect : filesToInspect) {
+                callParsersBeforeParseFile(fileToInspect);
                 parseFile(fileToInspect);
-                for (FileParser fileParser : fileParsers) {
-                    fileParser.afterParsingFile(fileToInspect);
-                }
+                callParsersAfterParseFile(fileToInspect);
             }
             logger.info("All files parsed.");
             alreadyScanned = true;
+        }
+    }
+
+    private void callParsersBeforeParseFile(FileMetadata fileToParse) {
+        for (FileParser fileParser : fileParsers) {
+            fileParser.beforeParsingFile(fileToParse);
         }
     }
 
@@ -72,6 +77,12 @@ public class FilesProcessor {
 
         } catch (IOException e) {
             logger.error("Cannot read file: " + fileToInspect.getFile().getAbsolutePath(), e);
+        }
+    }
+
+    private void callParsersAfterParseFile(FileMetadata parsedFile) {
+        for (FileParser fileParser : fileParsers) {
+            fileParser.afterParsingFile(parsedFile);
         }
     }
 }

@@ -17,31 +17,26 @@
 package com.autentia.poda.parser;
 
 import com.autentia.poda.FileMetadata;
-import com.autentia.poda.FilesCollection;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static org.junit.Assert.*;
 
-public class RootOfTreesFinder implements FileParser {
-
-    private final List<FileMetadata> roots = new ArrayList<>();
-
-    public RootOfTreesFinder(FilesCollection filesToInspect) {
-        roots.addAll(filesToInspect.getAll());
-    }
+public class MockFileParser implements FileParser {
+    private int beforeCounter = 0;
+    private int afterCounter = 0;
 
     @Override
     public void beforeParsingFile(FileMetadata fileToParse) {
+        beforeCounter++;
     }
 
     @Override
     public void afterParsingFile(FileMetadata parsedFile) {
-        roots.removeAll(parsedFile.references());
+        afterCounter++;
     }
 
-    public List<FileMetadata> rootOfTrees() {
-        return Collections.unmodifiableList(roots);
+    public void assertCallsCounts(int expectedCallsCount) {
+        assertEquals("beforeCounter", expectedCallsCount, beforeCounter);
+        assertEquals("afterCounter", expectedCallsCount, afterCounter);
     }
 
 }

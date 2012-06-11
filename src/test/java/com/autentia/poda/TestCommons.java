@@ -19,7 +19,9 @@ package com.autentia.poda;
 import com.autentia.poda.parser.BinaryFileFinder;
 import com.autentia.poda.parser.FileParser;
 import com.autentia.poda.parser.FileReferencesFinder;
+import com.autentia.poda.parser.MockFileParser;
 import com.autentia.poda.parser.RootOfTreesFinder;
+import com.autentia.poda.parser.Statistician;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,9 +77,13 @@ public class TestCommons {
 
     static final BinaryFileFinder BINARY_FILE_FINDER = new BinaryFileFinder();
 
+    static final MockFileParser MOCK_FILE_PARSER = new MockFileParser();
+
+    public static final Statistician STATISTICIAN = new Statistician(files.getAll().size());
+
     static final FilesProcessor FILES_PROCESSOR = new FilesProcessor(
             files,
-            new ArrayList<>(Arrays.asList(new FileParser[] {ROOT_OF_TREES_FINDER})),
+            new ArrayList<>(Arrays.asList(ROOT_OF_TREES_FINDER, MOCK_FILE_PARSER, STATISTICIAN)),
             new ArrayList<>(Arrays.asList(BINARY_FILE_FINDER, new FileReferencesFinder(files))));
 
     static {
