@@ -83,8 +83,9 @@ public class FileMetadata {
                 toString.append(fileReferenced.getPath()).append(", ");
             }
             toString.setLength(toString.length() - 2);
-            toString.append("]}");
+            toString.append("]");
         }
+        toString.append("}");
         return toString.toString();
     }
 
