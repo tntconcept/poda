@@ -50,14 +50,17 @@ public class Poda {
         poda.launchProcess();
     }
 
+    @Parameter(names = {"-h", "--help"}, description = "Show this help and exit.")
+    private boolean showUsage = false;
+
     @Parameter(names = {"-fsl", "--follow-symblinks"}, description = "Follow symbolic links.")
     private boolean followSymbolicLinks = false;
 
+    @Parameter(names = {"-ph", "--parse-hiddens"}, description = "Parse hidden files.")
+    protected boolean parseHiddenFiles = false;
+
     @Parameter(description = "directory-to-scan")
     private List<String> commandLineArgs = new ArrayList<>();
-
-    @Parameter(names = {"-h", "--help"}, description = "Show this help and exit.")
-    private boolean showUsage = false;
 
     private final List<FileParser> fileParsers = new ArrayList<>();
     private final List<LineParser> lineParsers = new ArrayList<>();
@@ -77,7 +80,7 @@ public class Poda {
     private FilesCollection searchFiles() throws IOException {
         String dirToScan = dirToScan();
         System.out.println("Searching files in directory: " + new File(dirToScan).getCanonicalPath() + " ...");
-        FilesCollection filesToInspect = new FilesCollection().scanDirectory(dirToScan, followSymbolicLinks);
+        FilesCollection filesToInspect = new FilesCollection().scanDirectory(dirToScan, followSymbolicLinks, parseHiddenFiles);
         System.out.println("Found " + filesToInspect.getAll().size() + " files.");
         return filesToInspect;
     }

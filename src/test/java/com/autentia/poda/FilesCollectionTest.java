@@ -16,7 +16,6 @@
  */
 package com.autentia.poda;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -35,13 +34,15 @@ public class FilesCollectionTest {
             new File(SRC_TEST_RESOURCES + "notReferenced.txt"),
             new File(SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt")};
 
-    private static File[] FILES_FOLLOWING_SYMBOLIC_LINKS;
+    private static final File[] FILES_FOLLOWING_SYMBOLIC_LINKS = addToArray(FILES, new File(SRC_TEST_RESOURCES + "toLinkWithSymbolicLink/fileInsideSymbolicLinkDir.txt"));
+    private static final File[] FILES_WITH_HIDDEN_FILES = addToArray(FILES, new File(SRC_TEST_RESOURCES + "/.htaccess"));
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        List<File> filesFollowingSymbolicLinks = new ArrayList<>(Arrays.asList(FILES));
-        filesFollowingSymbolicLinks.add(new File(SRC_TEST_RESOURCES + "toLinkWithSymbolicLink/fileInsideSymbolicLinkDir.txt"));
-        FILES_FOLLOWING_SYMBOLIC_LINKS = filesFollowingSymbolicLinks.toArray(new File[filesFollowingSymbolicLinks.size()]);
+    private static File[] addToArray(File[] arrayWhereAdd, File... elementsToAdd) {
+        List<File> list = new ArrayList<>(Arrays.asList(arrayWhereAdd));
+        for (File element : elementsToAdd) {
+            list.add(element);
+        }
+        return list.toArray(new File[list.size()]);
     }
 
     @Test
@@ -51,9 +52,14 @@ public class FilesCollectionTest {
 
     @Test
     public void scanAllFilesFollowingSymbolicLinks() throws Exception {
-        FilesCollection filesFollowingSymbolicLinks = new FilesCollection().scanDirectory(SRC_TEST_RESOURCES, true);
+        FilesCollection filesFollowingSymbolicLinks = new FilesCollection().scanDirectory(SRC_TEST_RESOURCES, true, false);
         assertFilesMetadata(filesFollowingSymbolicLinks.getAll(), FILES_FOLLOWING_SYMBOLIC_LINKS);
+    }
 
+    @Test
+    public void scanAllFilesWithHiddenFiles() throws Exception {
+        FilesCollection filesFollowingSymbolicLinks = new FilesCollection().scanDirectory(SRC_TEST_RESOURCES, false, true);
+        assertFilesMetadata(filesFollowingSymbolicLinks.getAll(), FILES_WITH_HIDDEN_FILES);
     }
 
     @Test

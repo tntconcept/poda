@@ -87,7 +87,7 @@ public class TestEnvironment {
     static {
        createSymbolicLink();
 
-        FILES_TO_INSPECT.scanDirectory(SRC_TEST_RESOURCES, false);
+        FILES_TO_INSPECT.scanDirectory(SRC_TEST_RESOURCES, false, false);
         ROOT_OF_TREES_FINDER = new RootOfTreesFinder(FILES_TO_INSPECT);
         STATISTICIAN = new Statistician(FILES_TO_INSPECT.getAll().size());
 

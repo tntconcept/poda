@@ -19,6 +19,7 @@ package com.autentia.poda;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.slf4j.Logger;
@@ -48,8 +49,8 @@ public class FilesCollection implements Iterable<FileMetadata> {
     private Map<String, FileMetadata> filesByPath = Collections.emptyMap();
     private Map<String, List<FileMetadata>> filesByName = Collections.emptyMap();
 
-    public FilesCollection scanDirectory(String path, boolean followSymbolicLinks) {
-        Collection<File> files = listFiles(path, followSymbolicLinks);
+    public FilesCollection scanDirectory(String path, boolean followSymbolicLinks, boolean parseHiddenFiles) {
+        Collection<File> files = listFiles(path, followSymbolicLinks, parseHiddenFiles);
         filesByPath = new HashMap<>(files.size());
         filesByName = new HashMap<>(files.size() / 2);
         for (File scannedFile : files) {
@@ -60,13 +61,13 @@ public class FilesCollection implements Iterable<FileMetadata> {
         return this;
     }
 
-    private Collection<File> listFiles(String path, boolean followSymbolicLinks) {
+    private Collection<File> listFiles(String path, boolean followSymbolicLinks, boolean parseHiddenFiles) {
         File directoryToScan = new File(path);
         logger.info("Searching files in directory: {}", directoryToScan.getAbsolutePath());
 
-//        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, null, true);
+        IOFileFilter fileFilter = parseHiddenFiles ? TrueFileFilter.INSTANCE : HiddenFileFilter.VISIBLE;
         IOFileFilter dirFilter = followSymbolicLinks ? TrueFileFilter.INSTANCE : symbolicLinksFilter;
-        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, TrueFileFilter.INSTANCE, dirFilter);
+        Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, fileFilter, dirFilter);
 
         logger.info("Found " + scannedFiles.size() + " files.");
         return scannedFiles;
