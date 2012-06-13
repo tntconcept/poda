@@ -25,25 +25,35 @@ import java.util.TreeSet;
 
 public class TextGraph {
     private final List<FileMetadata> rootOfTrees;
+    private final int maxDeepLevelToShow;
     private String toStringCache = null;
     private int lineNumber = 0;
     private Map<String, Integer> visitedFilesInLine = new HashMap<>();
 
-    public TextGraph(List<FileMetadata> rootOfTrees) {
+    public TextGraph(List<FileMetadata> rootOfTrees, int maxDeepLevelToShow) {
         this.rootOfTrees = rootOfTrees;
+        this.maxDeepLevelToShow = maxDeepLevelToShow;
     }
 
     @Override
     public String toString() {
         if (toStringCache == null) {
             StringBuilder textGraph = new StringBuilder();
-            recursivePrint(textGraph, " - ", rootOfTrees);
+            recursivePrint(textGraph, " - ", rootOfTrees, 1);
             toStringCache = textGraph.toString();
         }
         return toStringCache;
     }
 
-    private void recursivePrint(StringBuilder textGraph, String indentation, Collection<FileMetadata> files) {
+    private void recursivePrint(StringBuilder textGraph, String indentation, Collection<FileMetadata> files, int deepLevel) {
+        if (deepLevel > maxDeepLevelToShow) {
+            if (!files.isEmpty()) {
+                lineNumber++;
+                textGraph.append(lineNumber).append(indentation).append("+").append(System.lineSeparator());
+                return;
+            }
+        }
+
         SortedSet<FileMetadata> sortedFiles = new TreeSet<>(files);
         for (FileMetadata file : sortedFiles) {
             lineNumber++;
@@ -51,7 +61,7 @@ public class TextGraph {
             textGraph.append(lineNumber).append(indentation).append(file.toStringShortFormat());
             if (previousLineNumber == lineNumber) {
                 textGraph.append(System.lineSeparator());
-                recursivePrint(textGraph, incrementIndentation(indentation), file.references());
+                recursivePrint(textGraph, incrementIndentation(indentation), file.references(), deepLevel + 1);
             } else {
                 textGraph.append(" --> ").append(previousLineNumber).append(System.lineSeparator());
             }

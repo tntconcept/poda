@@ -40,11 +40,31 @@ public class TextGraphTest {
             "9 - " + SRC_TEST_RESOURCES + "notReferenced.txt\n" +
             "10 -     " + SRC_TEST_RESOURCES + "com/autentia/resources/alejandropgarci.jpg(B)\n";
 
+    private static final String DEEP_LEVEL_2_EXPECTED_GRAPH =
+            "1 - " + SRC_TEST_RESOURCES + "com/autentia/main.txt\n" +
+            "2 -     " + SRC_TEST_RESOURCES + "com/autentia/Utils.txt\n" +
+            "3 -         +\n" +
+            "4 -     " + SRC_TEST_RESOURCES + "com/autentia/model/Negocio.txt\n" +
+            "5 -         +\n" +
+            "6 - " + SRC_TEST_RESOURCES + "com/autentia/notReferenced.txt\n" +
+            "7 - " + SRC_TEST_RESOURCES + "com/autentia/resources/autentia.png(B)\n" +
+            "8 - " + SRC_TEST_RESOURCES + "notReferenced.txt\n" +
+            "9 -     " + SRC_TEST_RESOURCES + "com/autentia/resources/alejandropgarci.jpg(B)\n";
+
     @Test
     public void graphAsString() throws Exception {
-        TextGraph textGraph = new TextGraph(ROOT_OF_TREES_FINDER.rootOfTrees());
+        TextGraph textGraph = new TextGraph(ROOT_OF_TREES_FINDER.rootOfTrees(), Integer.MAX_VALUE);
         logger.debug("\n{}", textGraph);
 
         assertThat(textGraph.toString(), equalTo(EXPECTED_GRAPH));
     }
+
+    @Test
+    public void deepLevel2GraphAsString() throws Exception {
+        TextGraph textGraph = new TextGraph(ROOT_OF_TREES_FINDER.rootOfTrees(), 2);
+        logger.debug("\n{}", textGraph);
+
+        assertThat(textGraph.toString(), equalTo(DEEP_LEVEL_2_EXPECTED_GRAPH));
+    }
+
 }

@@ -30,11 +30,16 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Poda {
 
     private static final Logger logger = LoggerFactory.getLogger(Poda.class);
+    private static final int ROOT_OF_TREES_FINDER = 0;
+    private static final int STATISTICIAN = 1;
 
     public static void main(String... args) throws IOException {
         Poda poda = new Poda();
@@ -53,14 +58,17 @@ public class Poda {
     @Parameter(names = {"-h", "--help"}, description = "Show this help and exit.")
     private boolean showUsage = false;
 
-    @Parameter(names = {"-fsl", "--follow-symblinks"}, description = "Follow symbolic links.")
+    @Parameter(names = {"-l", "--follow-symblinks"}, description = "Follow symbolic links.")
     private boolean followSymbolicLinks = false;
 
-    @Parameter(names = {"-ph", "--parse-hiddens"}, description = "Parse hidden files.")
-    protected boolean parseHiddenFiles = false;
+    @Parameter(names = {"-a", "--parse-hiddens"}, description = "Parse hidden files.")
+    private boolean parseHiddenFiles = false;
+
+    @Parameter(names = {"-d","--deep-level"}, description = "Deep level to show the resulting graph. By default (0) show all levels. You can specify several times this option.")
+    private final Set<Integer> deepLevels = new TreeSet<>();
 
     @Parameter(description = "directory-to-scan")
-    private List<String> commandLineArgs = new ArrayList<>();
+    private final List<String> commandLineArgs = new ArrayList<>();
 
     private final List<FileParser> fileParsers = new ArrayList<>();
     private final List<LineParser> lineParsers = new ArrayList<>();
@@ -114,11 +122,23 @@ public class Poda {
     }
 
     private void printGraph() {
-        RootOfTreesFinder rootOfTreesFinder = (RootOfTreesFinder) fileParsers.get(0);
-        TextGraph textGraph = new TextGraph(rootOfTreesFinder.rootOfTrees());
-        logger.info("\n{}", textGraph);
-        logger.info("{}", fileParsers.get(1));
-        System.out.println(textGraph);
+        normalizeDeepLevels();
+
+        RootOfTreesFinder rootOfTreesFinder = (RootOfTreesFinder) fileParsers.get(ROOT_OF_TREES_FINDER);
+        for (Integer deepLevel : deepLevels) {
+            TextGraph textGraph = new TextGraph(rootOfTreesFinder.rootOfTrees(), deepLevel.intValue());
+            logger.info("{}{}", System.lineSeparator(), textGraph);
+            System.out.println(textGraph);
+        }
+        logger.info("{}", fileParsers.get(STATISTICIAN));
+        System.out.println(fileParsers.get(STATISTICIAN));
+    }
+
+    private void normalizeDeepLevels() {
+        boolean zeroRemoved = deepLevels.remove(Integer.valueOf(0));
+        if (deepLevels.isEmpty() || zeroRemoved) {
+            deepLevels.add(Integer.valueOf(Integer.MAX_VALUE));
+        }
     }
 
 }
