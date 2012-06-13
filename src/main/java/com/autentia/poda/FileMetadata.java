@@ -27,6 +27,7 @@ public class FileMetadata implements Comparable<FileMetadata> {
     private final File originalFile;
     private boolean isBinary = false;
     private final Collection<FileMetadata> references = new HashSet<>();
+    private final Collection<FileMetadata> referencedBy = new HashSet<>();
 
     public FileMetadata(File originalFile) {
         Validate.notNull(originalFile, "Cannot create a file metadata with null original file");
@@ -65,10 +66,15 @@ public class FileMetadata implements Comparable<FileMetadata> {
 
     public void addReference(FileMetadata reference) {
         references.add(reference);
+        reference.referencedBy.add(this);
     }
 
     public Collection<FileMetadata> references() {
         return Collections.unmodifiableCollection(references);
+    }
+
+    public Collection<FileMetadata> referencedBy() {
+        return Collections.unmodifiableCollection(referencedBy);
     }
 
     @Override
@@ -87,11 +93,12 @@ public class FileMetadata implements Comparable<FileMetadata> {
     }
 
     public String toStringShortFormat() {
-        String shortFormat = originalFile.getPath();
+        StringBuilder shortFormat = new StringBuilder(originalFile.getPath());
+        shortFormat.append('[').append(referencedBy.size()).append(']');
         if (isBinary) {
-            shortFormat += "(B)";
+            shortFormat.append("(B)");
         }
-        return shortFormat;
+        return shortFormat.toString();
     }
 
     public File getFile() {

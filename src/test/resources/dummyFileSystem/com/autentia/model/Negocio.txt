@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ====
 
-Este fichero se referencia desde el main.
+Este fichero se referencia desde el main, y desde Utils, creando una referencia circular.
 
 Además hace referencia a:
 
