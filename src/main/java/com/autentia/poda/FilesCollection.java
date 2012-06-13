@@ -18,7 +18,7 @@ package com.autentia.poda;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
-import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +38,7 @@ import java.util.Map;
 public class FilesCollection implements Iterable<FileMetadata> {
     private static final Logger logger = LoggerFactory.getLogger(FilesCollection.class);
 
-    private static final IOFileFilter symbolicLinksFilter = new AbstractFileFilter() {
+    private static final IOFileFilter NOT_SYMBOLIC_LINK = new AbstractFileFilter() {
         @Override
         public boolean accept(File file) {
             return !Files.isSymbolicLink(file.toPath());
@@ -66,11 +65,19 @@ public class FilesCollection implements Iterable<FileMetadata> {
         logger.info("Searching files in directory: {}", directoryToScan.getAbsolutePath());
 
         IOFileFilter fileFilter = parseHiddenFiles ? TrueFileFilter.INSTANCE : HiddenFileFilter.VISIBLE;
-        IOFileFilter dirFilter = followSymbolicLinks ? TrueFileFilter.INSTANCE : symbolicLinksFilter;
+        IOFileFilter dirFilter = followSymbolicLinks ? TrueFileFilter.INSTANCE : NOT_SYMBOLIC_LINK;
+        dirFilter = andFiltersIgnoringTrueFilter(dirFilter, fileFilter);
+
         Collection<File> scannedFiles = FileUtils.listFiles(directoryToScan, fileFilter, dirFilter);
 
         logger.info("Found " + scannedFiles.size() + " files.");
         return scannedFiles;
+    }
+
+    private IOFileFilter andFiltersIgnoringTrueFilter(IOFileFilter filter1, IOFileFilter filter2) {
+        if (filter1 == TrueFileFilter.INSTANCE) return filter2;
+        if (filter2 == TrueFileFilter.INSTANCE) return filter1;
+        return new AndFileFilter(filter1, filter2);
     }
 
     private void putByName(FileMetadata scannedFileMetadata) {

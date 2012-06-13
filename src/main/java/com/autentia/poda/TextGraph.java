@@ -49,7 +49,7 @@ public class TextGraph {
         if (deepLevel > maxDeepLevelToShow) {
             if (!files.isEmpty()) {
                 lineNumber++;
-                textGraph.append(lineNumber).append(indentation).append("+").append(System.lineSeparator());
+                textGraph.append(lineNumber).append(indentation).append('+').append(System.lineSeparator());
                 return;
             }
         }
